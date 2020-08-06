@@ -22,7 +22,16 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        # create a var name for the instance of capacity
+        self.capacity = capacity
 
+        # if capacity is smaller tha the min capacity
+        # then point the capacity to the mind capacity
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        # create a storage that stores the result of 
+        # the storage times the capacity
+        self.storage = [None] * self.capacity
 
     def get_num_slots(self):
         """
@@ -35,6 +44,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # return the capacity
+        return self.capacity
 
 
     def get_load_factor(self):
@@ -44,7 +55,6 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
 
     def fnv1(self, key):
         """
@@ -63,6 +73,12 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash_index = 5381
+        hash_bytes = key.encode()
+
+        for byte in hash_bytes:
+            hash_index = ((hash_index << 5) + hash_index) + byte
+        return hash_index
 
 
     def hash_index(self, key):
@@ -82,6 +98,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hash the key
+        # create a var for hash_index
+        hash_index = self.hash_index(key)
+        # call the storage and pass the hash_index to it
+        # and point it to the Linked List HashTableEntry passing the key and value
+        self.storage[hash_index] = HashTableEntry(key, value)
 
 
     def delete(self, key):
@@ -93,6 +115,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hash the key
+        # create a var for hash_index
+        hash_index = self.hash_index(key)
+        # see if the value in the storage is not set to none
+        # then set it to none
+        if self.storage[hash_index] is not None:
+            self.storage[hash_index] = None
+        # and otherwise print
+        else:
+            print("Key is not found!")
 
 
     def get(self, key):
@@ -104,6 +136,17 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        # hash the key
+        # create a var for hash_index
+        hash_index = self.hash_index(key)
+        # see if the value in the storage is not set to none
+        # if not then return the value of the key in the storage
+        if self.storage[hash_index] is not None:
+            return self.storage[hash_index].value
+        # otherwise return none
+        else:
+            return None
+
 
 
     def resize(self, new_capacity):
