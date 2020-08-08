@@ -25,13 +25,14 @@ class HashTable:
         # create a var name for the instance of capacity
         self.capacity = capacity
 
-        # if capacity is smaller tha the min capacity
+        # if capacity is smaller than the min capacity
         # then point the capacity to the mind capacity
         if capacity < MIN_CAPACITY:
             self.capacity = MIN_CAPACITY
         # create a storage that stores the result of 
         # the storage times the capacity
         self.storage = [None] * self.capacity
+        self.size = 0
 
     def get_num_slots(self):
         """
@@ -55,6 +56,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        return self.size/self.capacity
 
     def fnv1(self, key):
         """
@@ -98,12 +100,60 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # Day 1:
+        # hash the key
+        # create a var for hash_index
+        # hash_index = self.hash_index(key)
+        # # call the storage and pass the hash_index to it
+        # # and point it to the Linked List HashTableEntry passing the key and value
+        # self.storage[hash_index] = HashTableEntry(key, value)
+
+        # Day 2:
         # hash the key
         # create a var for hash_index
         hash_index = self.hash_index(key)
-        # call the storage and pass the hash_index to it
-        # and point it to the Linked List HashTableEntry passing the key and value
-        self.storage[hash_index] = HashTableEntry(key, value)
+        # get the hash index in the the storage
+        # and create a var for it called node
+        node = self.storage[hash_index]
+
+        # see if the node is set to none
+        # set the hash index in the storage to the Linked List 
+        # hash table entry and get the key and value
+        # then increase the size by one
+        if node is None:
+            self.storage[hash_index] = HashTableEntry(key, value)
+            self.size += 1
+            # if the get load factore is bigger than 0.7
+            # resize the capacity two times bigger
+            if self.get_load_factor() > 0.7:
+                self.resize(self.capacity * 2)
+            return
+
+        # set the prev to none
+        prev = None
+
+        # see if node is not none
+        # then set the prev to node
+        # and point the node to the next node
+        while node is not None:
+            prev = node
+            node = node.next
+            # and if the prev key is the current key
+            # then set the prev value to the current value
+            if prev.key == key:
+                prev.value = value
+                return
+        # set the prev next to the Linked List hash table entry
+        # and get the key and value
+        # then increase the size by one
+        prev.next = HashTableEntry(key, value)
+        self.size += 1
+        # if the get load factore is bigger than 0.7
+        # resize the capacity two times bigger
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity *2)
+
 
 
     def delete(self, key):
@@ -115,16 +165,50 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # Day 1:
+        # hash the key
+        # # create a var for hash_index
+        # hash_index = self.hash_index(key)
+        # # see if the value in the storage is not set to none
+        # # then set it to none
+        # if self.storage[hash_index] is not None:
+        #     self.storage[hash_index] = None
+        # # and otherwise print
+        # else:
+        #     print("Key is not found!")
+
+        
+        # Day 2:
         # hash the key
         # create a var for hash_index
         hash_index = self.hash_index(key)
-        # see if the value in the storage is not set to none
-        # then set it to none
-        if self.storage[hash_index] is not None:
-            self.storage[hash_index] = None
-        # and otherwise print
+        # get the hash index in the the storage
+        # and create a var for it called node
+        node = self.storage[hash_index]
+
+        # set the prev to none
+        prev = None
+
+        # see if the node is set at not none and of the 
+        # node key is not equal to the key
+        # then set the prev to node
+        # and point the node to the next node
+        while node is not None and node.key != key:
+            prev = node
+            node = node.next
+        # and if node is set to none
+        # the return the "Key is not found!"
+        if node is None:
+            return "Key is not found!"
+        # otherwise if the prev is set to none
+        # then set the hash index in the storage to the next node
+        # and if not then set the prev and next to the next node
         else:
-            print("Key is not found!")
+            if prev is None:
+                self.storage[hash_index] = node.next
+            else:
+                prev.next = node.next
 
 
     def get(self, key):
@@ -149,7 +233,7 @@ class HashTable:
 
 
 
-    def resize(self, new_capacity):
+    def resize(self,  value):
         """
         Changes the capacity of the hash table and
         rehashes all key/value pairs.
@@ -157,6 +241,30 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        # create a new var called old capactiy
+        # and set the storage to the old capacity var
+        old_capacity = self.storage
+        # set the capacity to the value
+        self.capacity = value
+        # create another var for the new capacity
+        # and set the storage to the new capacity var
+        new_capacity = [None] * self.capacity
+        self.storage = new_capacity
+
+        # set the size to 0
+        self.size = 0
+
+        # loop through the old capacity
+        # set the current node to the index
+        for i in old_capacity:
+            cur_node = i
+            # and see if the current node is set at not none
+            # push the current node key and value to the storage
+            # and set the current node to the next one
+            while cur_node is not None:
+                self.put(cur_node.key, cur_node.value)
+                cur_node = cur_node.next
 
 
 
